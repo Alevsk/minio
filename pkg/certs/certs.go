@@ -215,6 +215,7 @@ func (m *Manager) watchSymlinks(certFile, keyFile string) {
 // has changed, if any.
 func (m *Manager) watchFileEvents() {
 	for {
+		log.Println("watchFileEvents")
 		select {
 		case <-m.ctx.Done():
 			return
