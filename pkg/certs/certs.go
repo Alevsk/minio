@@ -22,6 +22,7 @@ import (
 	"crypto/x509"
 	"errors"
 	"fmt"
+	"log"
 	"os"
 	"path/filepath"
 	"sync"
@@ -218,6 +219,7 @@ func (m *Manager) watchFileEvents() {
 		case <-m.ctx.Done():
 			return
 		case event := <-m.events:
+			log.Println(event.Event())
 			if !isWriteEvent(event.Event()) {
 				continue
 			}
