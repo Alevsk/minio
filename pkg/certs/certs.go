@@ -188,14 +188,19 @@ func (m *Manager) watchSymlinks(certFile, keyFile string) {
 		select {
 		case <-m.ctx.Done():
 			return // Once stopped exits this routine.
-		case <-time.After(1 * time.Minute):
+		case <-time.After(30 * time.Second):
 			log.Println("refreshing certificate via symlink")
 			certificate, err := m.loadX509KeyPair(certFile, keyFile)
+			log.Println("certificate", certificate)
+			log.Println("err", err)
 			if err != nil {
 				continue
 			}
+			log.Println("certificate.Leaf", certificate.Leaf)
 			if certificate.Leaf == nil { // This is a performance optimisation
 				certificate.Leaf, err = x509.ParseCertificate(certificate.Certificate[0])
+				log.Println("err", err)
+				log.Println("inside certificate.Leaf", certificate.Leaf)
 				if err != nil {
 					continue
 				}
@@ -205,9 +210,12 @@ func (m *Manager) watchSymlinks(certFile, keyFile string) {
 				CertFile: certFile,
 				KeyFile:  keyFile,
 			}
+			log.Println("p", p)
+			log.Println("before m.certificates[p]", m.certificates[p])
 			m.lock.Lock()
 			m.certificates[p] = &certificate
 			m.lock.Unlock()
+			log.Println("after m.certificates[p]", m.certificates[p])
 		}
 	}
 }
