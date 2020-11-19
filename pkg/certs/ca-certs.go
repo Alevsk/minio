@@ -19,6 +19,7 @@ package certs
 import (
 	"crypto/x509"
 	"io/ioutil"
+	"log"
 	"os"
 	"path"
 )
@@ -46,6 +47,9 @@ func GetRootCAs(certsCAsDir string) (*x509.CertPool, error) {
 	// Load all custom CA files.
 	for _, fi := range fis {
 		caCert, err := ioutil.ReadFile(path.Join(certsCAsDir, fi.Name()))
+		log.Println("fi.Name()", fi.Name())
+		log.Println(string(caCert))
+		log.Println("-------------")
 		if err != nil {
 			// ignore files which are not readable.
 			continue
